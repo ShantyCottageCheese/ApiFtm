@@ -9,7 +9,14 @@ import java.net.URL;
 
 public class Api {
     public static void main(String[] args) throws IOException {
-        URL obj = new URL("https://ftmscan.com/chart/address");
+        Data[] addresses = downloadAddresses("https://ftmscan.com/chart/address");
+        if (addresses != null)
+            for (Data value : addresses)
+                System.out.println(value);
+    }
+
+    public static Data[] downloadAddresses(String url) throws IOException {
+        URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
 
@@ -32,8 +39,8 @@ public class Api {
             finalString = finalString.replaceAll(", }", "}");
             finalString += "]";
 
-            Data[] data = new ObjectMapper().readValue(finalString, Data[].class);
-            for (Data value : data) System.out.println(value);
-        }
+            return new ObjectMapper().readValue(finalString, Data[].class);
+        } else System.out.println("Error");
+        return null;
     }
 }
